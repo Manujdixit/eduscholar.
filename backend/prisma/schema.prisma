@@ -29,6 +29,9 @@ model Colleges {
   meta_desc String
   og_img    String
 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   CollegesCourses    CollegesCourses[]
   CollegewiseContent CollegewiseContent[]
 }
@@ -42,6 +45,9 @@ model Courses {
 
   meta_desc String
   og_img    String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   CollegesCourses CollegesCourses[]
 }
@@ -58,6 +64,9 @@ model CollegesCourses {
   meta_desc String
   og_img    String
 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   college    Colleges @relation(fields: [college_id], references: [id])
   college_id Int
 
@@ -73,6 +82,9 @@ model CollegewiseContent {
 
   meta_desc String
   og_img    String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   college    Colleges @relation(fields: [college_id], references: [id])
   college_id Int
@@ -97,6 +109,9 @@ model Articles {
 
   meta_desc String
   og_img    String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 enum ArticlesSilos {

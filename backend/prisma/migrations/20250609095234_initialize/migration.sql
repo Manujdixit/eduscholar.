@@ -19,6 +19,8 @@ CREATE TABLE "Colleges" (
     "score" INTEGER NOT NULL,
     "meta_desc" TEXT NOT NULL,
     "og_img" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "Colleges_pkey" PRIMARY KEY ("id")
 );
@@ -32,6 +34,8 @@ CREATE TABLE "Courses" (
     "score" INTEGER NOT NULL,
     "meta_desc" TEXT NOT NULL,
     "og_img" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "Courses_pkey" PRIMARY KEY ("id")
 );
@@ -47,6 +51,8 @@ CREATE TABLE "CollegesCourses" (
     "other_fees" JSONB NOT NULL,
     "meta_desc" TEXT NOT NULL,
     "og_img" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
     "college_id" INTEGER NOT NULL,
     "course_id" INTEGER NOT NULL,
 
@@ -61,6 +67,8 @@ CREATE TABLE "CollegewiseContent" (
     "silos" "CollegewiseContentSilos" NOT NULL DEFAULT 'info',
     "meta_desc" TEXT NOT NULL,
     "og_img" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
     "college_id" INTEGER NOT NULL,
 
     CONSTRAINT "CollegewiseContent_pkey" PRIMARY KEY ("id")
@@ -74,6 +82,8 @@ CREATE TABLE "Articles" (
     "silos" "ArticlesSilos" NOT NULL DEFAULT 'news',
     "meta_desc" TEXT NOT NULL,
     "og_img" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "Articles_pkey" PRIMARY KEY ("id")
 );
