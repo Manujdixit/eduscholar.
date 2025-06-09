@@ -6,6 +6,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  seed     = "ts-node prisma/seed.ts"
 }
 
 datasource db {
@@ -14,17 +15,21 @@ datasource db {
 }
 
 model Colleges {
-  id           Int      @id @default(autoincrement())
-  college_name String
-  location     String
-  established  DateTime
-  email        String
-  contact      String
-  logo_url     String
-  bg_url       String
-  media_url    Json
-  rating       Float // Must be between 1 and 10
-  score        Int // Must be between 1 and 999
+  id                Int                   @id @default(autoincrement())
+  college_name      String
+  location          String
+  established       DateTime
+  email             String
+  contact           String
+  logo_url          String
+  bg_url            String
+  media_url         Json
+  rating            Float // Must be between 1 and 10
+  score             Int // Must be between 1 and 999
+  primary_stream    CollegesPrimaryStream
+  intake_start_date DateTime
+  pr_pathway        Boolean
+  slug              String                @unique
 
   meta_desc String
   og_img    String
@@ -34,6 +39,13 @@ model Colleges {
 
   CollegesCourses    CollegesCourses[]
   CollegewiseContent CollegewiseContent[]
+}
+
+enum CollegesPrimaryStream {
+  Engineering
+  Management
+  Design
+  Law
 }
 
 model Courses {
@@ -120,4 +132,18 @@ enum ArticlesSilos {
   course
   blog
   other
+}
+
+model LeadForm {
+  id     Int    @id @default(autoincrement())
+  name   String
+  email  String
+  phn_no String
+}
+
+model Subsciption {
+  id     Int    @id @default(autoincrement())
+  name   String
+  phn_no String
+  email  String
 }
