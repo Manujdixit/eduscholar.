@@ -1,12 +1,15 @@
 import express from "express";
 import cors from "cors";
 import { PrismaClient } from "@prisma/client";
+import mainRouter from "./routes";
 
 export const app = express();
 const prisma = new PrismaClient();
 
 app.use(cors());
 app.use(express.json());
+
+app.use("/api/v1", mainRouter);
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
