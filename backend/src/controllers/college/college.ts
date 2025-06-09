@@ -42,19 +42,31 @@ export const getTopColleges = async (req: Request, res: Response) => {
       select: {
         id: true,
         college_name: true,
-        location: true,
-        established: true,
         logo_url: true,
-        rating: true,
-        score: true,
-        primary_stream: true,
+        location: true,
+        intake_start_date: true,
+        pr_pathway: true,
         slug: true,
+        CollegesCourses: {
+          select: {
+            id: true,
+          },
+        },
       },
+    });
+
+    // Transform the colleges data to include course count
+    const collegesWithCourseCount = colleges.map((college) => {
+      const { CollegesCourses, ...rest } = college;
+      return {
+        ...rest,
+        count_collegewise_course: CollegesCourses.length,
+      };
     });
 
     return res.status(200).json({
       success: true,
-      data: colleges,
+      data: collegesWithCourseCount,
     });
   } catch (error) {
     console.error("Error fetching top colleges:", error);
