@@ -22,9 +22,87 @@ model Colleges {
   contact      String
   logo_url     String
   bg_url       String
-  media_url    String
-  rating       Float
-  score        Int
-  meta_desc    String
-  og_img       String
+  media_url    Json
+  rating       Float // Must be between 1 and 10
+  score        Int // Must be between 1 and 999
+
+  meta_desc String
+  og_img    String
+
+  CollegesCourses    CollegesCourses[]
+  CollegewiseContent CollegewiseContent[]
+}
+
+model Courses {
+  id                 Int    @id @default(autoincrement())
+  course_name        String
+  duration_in_months Int
+  rating             Float // Must be between 1 and 10
+  score              Int // Must be between 1 and 999
+
+  meta_desc String
+  og_img    String
+
+  CollegesCourses CollegesCourses[]
+}
+
+model CollegesCourses {
+  id                 Int    @id @default(autoincrement())
+  name               String
+  duration_in_months Int
+  tution_fees        Float
+  hostel_fees        Float
+  one_time_fees      Float
+  other_fees         Json
+
+  meta_desc String
+  og_img    String
+
+  college    Colleges @relation(fields: [college_id], references: [id])
+  college_id Int
+
+  course    Courses @relation(fields: [course_id], references: [id])
+  course_id Int
+}
+
+model CollegewiseContent {
+  id      Int                     @id @default(autoincrement())
+  title   String
+  content String
+  silos   CollegewiseContentSilos @default(info)
+
+  meta_desc String
+  og_img    String
+
+  college    Colleges @relation(fields: [college_id], references: [id])
+  college_id Int
+}
+
+enum CollegewiseContentSilos {
+  info
+  course
+  fees
+  scholarship
+  placement
+  news
+  ranking
+  other
+}
+
+model Articles {
+  id      Int           @id @default(autoincrement())
+  title   String
+  content String
+  silos   ArticlesSilos @default(news)
+
+  meta_desc String
+  og_img    String
+}
+
+enum ArticlesSilos {
+  news
+  exam
+  course
+  blog
+  other
 }
