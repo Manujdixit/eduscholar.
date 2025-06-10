@@ -115,11 +115,14 @@ model CollegewiseContent {
 enum CollegewiseContentSilos {
   info
   course
+  department
+  career
+  ranking
   fees
   scholarship
   placement
   news
-  ranking
+  faq
   other
 }
 
