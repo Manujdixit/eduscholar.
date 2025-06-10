@@ -157,7 +157,7 @@ model LeadForm {
   updatedAt DateTime @updatedAt
 }
 
-model Subsciption {
+model Subscription {
   id     Int    @id @default(autoincrement())
   name   String
   phn_no String
