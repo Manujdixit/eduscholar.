@@ -13,34 +13,20 @@ export const getTopColleges = async (req: Request, res: Response) => {
   try {
     const { stream } = req.query;
 
-    // Get stream by name if provided
-    let streamFilter = undefined;
-    if (stream) {
-      const streamString = stream.toString();
-      const foundStream = await prisma.stream.findFirst({
-        where: {
-          name: {
-            equals: streamString,
-            mode: "insensitive",
-          },
-        },
-      });
+    // Build the where clause conditionally
+    const whereClause: any = {};
 
-      if (foundStream) {
-        streamFilter = foundStream.id;
-      } else {
-        return res.status(400).json({
-          success: false,
-          message: "Invalid stream specified",
-        });
-      }
+    if (stream) {
+      whereClause.primary_stream = {
+        name: {
+          equals: String(stream),
+          mode: "insensitive",
+        },
+      };
     }
 
-    // Get top 6 colleges based on score
     const colleges = await prisma.colleges.findMany({
-      where: {
-        ...(streamFilter && { streamId: streamFilter }),
-      },
+      where: whereClause,
       orderBy: {
         score: "desc",
       },
@@ -54,32 +40,25 @@ export const getTopColleges = async (req: Request, res: Response) => {
         pr_pathway: true,
         slug: true,
         CollegesCourses: {
-          select: {
-            id: true,
-          },
+          select: { id: true },
         },
       },
     });
 
-    // Transform the colleges data to include course count
-    const collegesWithCourseCount = colleges.map((college) => {
-      const { CollegesCourses, ...rest } = college;
-      return {
-        ...rest,
-        count_collegewise_course: CollegesCourses.length,
-      };
-    });
+    const response = colleges.map((college) => ({
+      id: college.id,
+      college_name: college.college_name,
+      logo_url: college.logo_url,
+      location: college.location,
+      intake_start_date: college.intake_start_date,
+      pr_pathway: college.pr_pathway,
+      slug: college.slug,
+      count_collegewise_course: college.CollegesCourses.length,
+    }));
 
-    return res.status(200).json({
-      success: true,
-      data: collegesWithCourseCount,
-    });
+    res.status(200).json(response);
   } catch (error) {
     console.error("Error fetching top colleges:", error);
-    return res.status(500).json({
-      success: false,
-      message: "An error occurred while fetching top colleges",
-      error: (error as Error).message,
-    });
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
