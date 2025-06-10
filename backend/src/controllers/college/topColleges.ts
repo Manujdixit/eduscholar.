@@ -4,10 +4,25 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 /**
- * @description Gets top 6 colleges based on best scores, optionally filtered by stream
- * @route GET /api/v1/college/top
- * @param {string} stream - Optional parameter to filter colleges by stream name (Engineering, Management, Design, Law)
- * @access Public
+ * @swagger
+ * /api/v1/college/top:
+ *   get:
+ *     summary: Get top colleges
+ *     tags: [Colleges]
+ *     description: Retrieve a list of top-ranked colleges
+ *     parameters:
+ *       - in: query
+ *         name: stream
+ *         required: false
+ *         description: Optional parameter to filter colleges by stream name (Engineering, Management, Design, Law)
+ *         schema:
+ *           type: string
+ *           example: "engineering"
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved top colleges
+ *       500:
+ *         description: Internal server error
  */
 export const getTopColleges = async (req: Request, res: Response) => {
   try {

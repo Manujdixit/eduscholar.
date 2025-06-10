@@ -4,10 +4,27 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 /**
- * @description Global search across colleges, courses, and articles
- * @route GET /api/v1/search
- * @param {string} q - Query string to search for
- * @access Public
+ * @swagger
+ * /api/v1/search:
+ *   get:
+ *     summary: Global search for colleges, artciles and courses
+ *     tags: [Search]
+ *     description: Search across colleges and courses using a query parameter
+ *     parameters:
+ *       - in: query
+ *         name: q
+ *         required: true
+ *         description: Search query string
+ *         schema:
+ *           type: string
+ *           example: "engineering"
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved search results
+ *       400:
+ *         description: Bad request - missing or invalid query parameter
+ *       500:
+ *         description: Internal server error
  */
 export const globalSearch = async (req: Request, res: Response) => {
   try {
