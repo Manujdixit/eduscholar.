@@ -81,7 +81,7 @@ CollegeRouter.get("/courses/:id", getCollegeCoursesInfo as any);
 
 /**
  * @swagger
- * /api/v1/college/courses/{id}:
+ * /api/v1/college/fees/{id}:
  *   get:
  *     summary: Get fess for corses offered by a college
  *     tags: [Colleges]
