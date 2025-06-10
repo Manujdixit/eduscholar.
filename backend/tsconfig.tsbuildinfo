@@ -1,1 +1,0 @@
-{"root":["./src/index.ts","./src/seed.ts","./src/controllers/college/college.ts","./src/controllers/search/search.ts","./src/routes/index.ts","./src/routes/college/college.ts","./src/routes/search/search.ts"],"version":"5.8.3"}
