@@ -15,37 +15,39 @@ datasource db {
 }
 
 model Colleges {
-  id                Int                   @id @default(autoincrement())
-  college_name      String
-  location          String
-  established       DateTime
-  email             String
-  contact           String
-  logo_url          String
-  bg_url            String
-  media_url         Json
-  rating            Float // Must be between 1 and 10
-  score             Int // Must be between 1 and 999
-  primary_stream    CollegesPrimaryStream
-  intake_start_date DateTime
-  pr_pathway        Boolean
-  slug              String                @unique
+  id                         Int      @id @default(autoincrement())
+  college_name               String
+  location                   String
+  established                DateTime
+  email                      String
+  contact                    String
+  logo_url                   String
+  bg_url                     String
+  media_url                  Json
+  rating                     Float // Must be between 1 and 10
+  score                      Int // Must be between 1 and 999
+  intake_start_date          DateTime
+  pr_pathway                 Boolean
+  slug                       String   @unique
+  total_students             Int      @default(0)
+  acceptance_rate            Float    @default(0)
+  international_student_rate Float    @default(0)
+
+  CollegesCourses    CollegesCourses[]
+  CollegewiseContent CollegewiseContent[]
+
+  primary_stream Stream @relation(fields: [streamId], references: [id])
+
+  city     City[]
+  state    State[]
+  country  Country[]
+  streamId Int       @default(1)
 
   meta_desc String
   og_img    String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  CollegesCourses    CollegesCourses[]
-  CollegewiseContent CollegewiseContent[]
-}
-
-enum CollegesPrimaryStream {
-  Engineering
-  Management
-  Design
-  Law
 }
 
 model Courses {
@@ -54,14 +56,16 @@ model Courses {
   duration_in_months Int
   rating             Float // Must be between 1 and 10
   score              Int // Must be between 1 and 999
+  stream             Stream @relation(fields: [streamId], references: [id])
+  streamId           Int
+
+  CollegesCourses CollegesCourses[]
 
   meta_desc String
   og_img    String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  CollegesCourses CollegesCourses[]
 }
 
 model CollegesCourses {
@@ -73,17 +77,20 @@ model CollegesCourses {
   one_time_fees      Float
   other_fees         Json
 
-  meta_desc String
-  og_img    String
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
   college    Colleges @relation(fields: [college_id], references: [id])
   college_id Int
 
   course    Courses @relation(fields: [course_id], references: [id])
   course_id Int
+
+  stream   Stream @relation(fields: [streamId], references: [id])
+  streamId Int
+
+  meta_desc String
+  og_img    String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model CollegewiseContent {
@@ -139,6 +146,9 @@ model LeadForm {
   name   String
   email  String
   phn_no String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Subsciption {
@@ -146,4 +156,69 @@ model Subsciption {
   name   String
   phn_no String
   email  String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model City {
+  id   Int    @id @default(autoincrement())
+  name String
+  slug String @unique
+
+  Colleges   Colleges? @relation(fields: [collegesId], references: [id])
+  collegesId Int?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model State {
+  id   Int    @id @default(autoincrement())
+  name String
+  slug String @unique
+
+  Colleges   Colleges? @relation(fields: [collegesId], references: [id])
+  collegesId Int?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Country {
+  id   Int    @id @default(autoincrement())
+  name String
+  slug String @unique
+
+  Colleges   Colleges? @relation(fields: [collegesId], references: [id])
+  collegesId Int?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Stream {
+  id   Int    @id @default(autoincrement())
+  name String
+  slug String @unique
+
+  Colleges        Colleges[]
+  Courses         Courses[]
+  CollegesCourses CollegesCourses[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ContactUs {
+  id       Int    @id @default(autoincrement())
+  name     String
+  phn_no   String
+  email    String
+  user_msg String
+  text1    String
+  text2    String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
