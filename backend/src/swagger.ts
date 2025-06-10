@@ -10,10 +10,6 @@ const options = {
       version: "1.0.0",
       description:
         "API documentation for EduScholar - College and Course Information System",
-      contact: {
-        name: "Manujdixit",
-        email: "your-email@example.com",
-      },
     },
     servers: [
       {
