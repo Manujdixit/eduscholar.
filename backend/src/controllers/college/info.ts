@@ -3,6 +3,29 @@ import { Request, Response } from "express";
 
 const prisma = new PrismaClient();
 
+/**
+ * @swagger
+ * /api/v1/college/info/{id}:
+ *   get:
+ *     summary: Get college information by ID
+ *     tags: [Colleges]
+ *     description: Retrieve detailed information about a specific college
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: College ID
+ *         schema:
+ *           type: integer
+ *           example: 1
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved college information
+ *       404:
+ *         description: College not found
+ *       500:
+ *         description: Internal server error
+ */
 export const collegeInfo = async (req: Request, res: Response) => {
   const collegeId = parseInt(req.params.id);
 
@@ -15,6 +38,8 @@ export const collegeInfo = async (req: Request, res: Response) => {
         },
         CollegewiseContent: {
           where: { silos: "info" },
+          orderBy: { updatedAt: "desc" },
+          take: 1,
         },
       },
     });
