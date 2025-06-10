@@ -49,7 +49,7 @@ export const createSubscription = async (req: Request, res: Response) => {
       });
     }
 
-    const subscription = await prisma.subsciption.create({
+    const subscription = await prisma.subscription.create({
       data: {
         name,
         phn_no,
@@ -119,12 +119,12 @@ export const getAllSubscriptions = async (req: Request, res: Response) => {
     const skip = (page - 1) * limit;
 
     const [subscriptions, total] = await Promise.all([
-      prisma.subsciption.findMany({
+      prisma.subscription.findMany({
         skip,
         take: limit,
         orderBy: { createdAt: "desc" },
       }),
-      prisma.subsciption.count(),
+      prisma.subscription.count(),
     ]);
 
     const totalPages = Math.ceil(total / limit);
@@ -178,7 +178,7 @@ export const getSubscriptionById = async (req: Request, res: Response) => {
       return res.status(400).json({ error: "Invalid ID format" });
     }
 
-    const subscription = await prisma.subsciption.findUnique({
+    const subscription = await prisma.subscription.findUnique({
       where: { id: subscriptionId },
     });
 
@@ -243,7 +243,7 @@ export const updateSubscription = async (req: Request, res: Response) => {
 
     const { name, phn_no, email } = req.body;
 
-    const existingSubscription = await prisma.subsciption.findUnique({
+    const existingSubscription = await prisma.subscription.findUnique({
       where: { id: subscriptionId },
     });
 
@@ -251,7 +251,7 @@ export const updateSubscription = async (req: Request, res: Response) => {
       return res.status(404).json({ error: "Subscription not found" });
     }
 
-    const updatedSubscription = await prisma.subsciption.update({
+    const updatedSubscription = await prisma.subscription.update({
       where: { id: subscriptionId },
       data: {
         ...(name && { name }),
@@ -297,7 +297,7 @@ export const deleteSubscription = async (req: Request, res: Response) => {
       return res.status(400).json({ error: "Invalid ID format" });
     }
 
-    const existingSubscription = await prisma.subsciption.findUnique({
+    const existingSubscription = await prisma.subscription.findUnique({
       where: { id: subscriptionId },
     });
 
@@ -305,7 +305,7 @@ export const deleteSubscription = async (req: Request, res: Response) => {
       return res.status(404).json({ error: "Subscription not found" });
     }
 
-    await prisma.subsciption.delete({
+    await prisma.subscription.delete({
       where: { id: subscriptionId },
     });
 
