@@ -28,9 +28,9 @@ export const collegeInfo = async (req: Request, res: Response) => {
       data: {
         basic: {
           ...college,
-          course_count: college._count.CollegesCourses,
-          info_content: college.CollegewiseContent,
         },
+        course_count: college._count.CollegesCourses,
+        info_content: college.CollegewiseContent,
       },
     });
   } catch (error) {
