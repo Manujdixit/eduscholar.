@@ -33,15 +33,18 @@ model Colleges {
   acceptance_rate            Float    @default(0)
   international_student_rate Float    @default(0)
 
+  streamId  Int @default(1)
+  cityId    Int @default(1)
+  stateId   Int @default(1)
+  countryId Int @default(1)
+
+  primary_stream Stream  @relation(fields: [streamId], references: [id])
+  city           City    @relation(fields: [cityId], references: [id])
+  state          State   @relation(fields: [stateId], references: [id])
+  country        Country @relation(fields: [countryId], references: [id])
+
   CollegesCourses    CollegesCourses[]
   CollegewiseContent CollegewiseContent[]
-
-  primary_stream Stream @relation(fields: [streamId], references: [id])
-
-  city     City[]
-  state    State[]
-  country  Country[]
-  streamId Int       @default(1)
 
   meta_desc String
   og_img    String
@@ -77,14 +80,13 @@ model CollegesCourses {
   one_time_fees      Float
   other_fees         Json
 
-  college    Colleges @relation(fields: [college_id], references: [id])
   college_id Int
+  course_id  Int
+  streamId   Int
 
-  course    Courses @relation(fields: [course_id], references: [id])
-  course_id Int
-
-  stream   Stream @relation(fields: [streamId], references: [id])
-  streamId Int
+  college Colleges @relation(fields: [college_id], references: [id])
+  course  Courses  @relation(fields: [course_id], references: [id])
+  stream  Stream   @relation(fields: [streamId], references: [id])
 
   meta_desc String
   og_img    String
@@ -105,8 +107,9 @@ model CollegewiseContent {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  college    Colleges @relation(fields: [college_id], references: [id])
   college_id Int
+
+  college Colleges @relation(fields: [college_id], references: [id])
 }
 
 enum CollegewiseContentSilos {
@@ -166,11 +169,10 @@ model City {
   name String
   slug String @unique
 
-  Colleges   Colleges? @relation(fields: [collegesId], references: [id])
-  collegesId Int?
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  Colleges Colleges[]
 }
 
 model State {
@@ -178,8 +180,7 @@ model State {
   name String
   slug String @unique
 
-  Colleges   Colleges? @relation(fields: [collegesId], references: [id])
-  collegesId Int?
+  Colleges Colleges[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -190,11 +191,10 @@ model Country {
   name String
   slug String @unique
 
-  Colleges   Colleges? @relation(fields: [collegesId], references: [id])
-  collegesId Int?
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  Colleges Colleges[]
 }
 
 model Stream {

@@ -36,7 +36,7 @@ export const globalSearch = async (req: Request, res: Response) => {
           logo_url: true,
           rating: true,
           score: true,
-          primary_stream: true,
+          streamId: true,
           slug: true,
         },
         take: 3,

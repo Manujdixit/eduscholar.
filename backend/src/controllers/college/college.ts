@@ -1,31 +1,37 @@
 import { Request, Response } from "express";
-import { PrismaClient, CollegesPrimaryStream } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
 /**
  * @description Gets top 6 colleges based on best scores, optionally filtered by stream
  * @route GET /api/v1/college/top
- * @param {string} stream - Optional parameter to filter colleges by stream (Engineering, Management, Design, Law)
+ * @param {string} stream - Optional parameter to filter colleges by stream name (Engineering, Management, Design, Law)
  * @access Public
  */
 export const getTopColleges = async (req: Request, res: Response) => {
   try {
     const { stream } = req.query;
 
-    // Convert stream string to enum value if provided
-    let streamFilter: CollegesPrimaryStream | undefined = undefined;
+    // Get stream by name if provided
+    let streamFilter = undefined;
     if (stream) {
       const streamString = stream.toString();
-      if (
-        Object.values(CollegesPrimaryStream).includes(
-          streamString as CollegesPrimaryStream
-        )
-      ) {
-        streamFilter = streamString as CollegesPrimaryStream;
+      const foundStream = await prisma.stream.findFirst({
+        where: {
+          name: {
+            equals: streamString,
+            mode: "insensitive",
+          },
+        },
+      });
+
+      if (foundStream) {
+        streamFilter = foundStream.id;
       } else {
         return res.status(400).json({
           success: false,
+          message: "Invalid stream specified",
         });
       }
     }
@@ -33,7 +39,7 @@ export const getTopColleges = async (req: Request, res: Response) => {
     // Get top 6 colleges based on score
     const colleges = await prisma.colleges.findMany({
       where: {
-        ...(streamFilter && { primary_stream: streamFilter }),
+        ...(streamFilter && { streamId: streamFilter }),
       },
       orderBy: {
         score: "desc",

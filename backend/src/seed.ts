@@ -1,384 +1,548 @@
 import { PrismaClient } from "@prisma/client";
-import {
-  CollegesPrimaryStream,
-  ArticlesSilos,
-  CollegewiseContentSilos,
-} from "@prisma/client";
+import { randomUUID } from "crypto";
 
 const prisma = new PrismaClient();
 
 async function main() {
-  // Clean up existing data
-  await prisma.collegesCourses.deleteMany({});
-  await prisma.collegewiseContent.deleteMany({});
-  await prisma.articles.deleteMany({});
-  await prisma.leadForm.deleteMany({});
-  await prisma.subsciption.deleteMany({});
-  await prisma.colleges.deleteMany({});
-  await prisma.courses.deleteMany({});
+  console.log("Starting database seeding...");
 
-  console.log("Database cleaned");
+  try {
+    // Test database connection
+    console.log("Testing database connection...");
+    await prisma.$connect();
+    console.log("Database connection successful!");
 
-  // Create colleges
-  const collegeIds = await Promise.all([
-    prisma.colleges.create({
-      data: {
-        college_name: "MIT Institute of Technology",
-        location: "Pune, Maharashtra",
-        established: new Date("1983-01-15"),
-        email: "admissions@mit.edu",
-        contact: "9876543210",
-        logo_url: "https://example.com/mit_logo.png",
-        bg_url: "https://example.com/mit_bg.jpg",
-        media_url: JSON.stringify({
-          images: ["url1", "url2"],
-          videos: ["video1"],
-        }),
-        rating: 8.7,
-        score: 856,
-        primary_stream: CollegesPrimaryStream.Engineering,
-        intake_start_date: new Date("2025-06-01"),
-        pr_pathway: true,
-        slug: "mit-institute-technology",
-        meta_desc: "Leading engineering college in Pune",
-        og_img: "https://example.com/mit_og.jpg",
-      },
-    }),
-    prisma.colleges.create({
-      data: {
-        college_name: "Harvard Business School",
-        location: "Mumbai, Maharashtra",
-        established: new Date("1975-03-20"),
-        email: "info@hbs.edu",
-        contact: "8765432109",
-        logo_url: "https://example.com/hbs_logo.png",
-        bg_url: "https://example.com/hbs_bg.jpg",
-        media_url: JSON.stringify({
-          images: ["url1", "url2"],
-          videos: ["video1"],
-        }),
-        rating: 9.2,
-        score: 920,
-        primary_stream: CollegesPrimaryStream.Management,
-        intake_start_date: new Date("2025-07-15"),
-        pr_pathway: false,
-        slug: "harvard-business-school",
-        meta_desc: "Premier business school in India",
-        og_img: "https://example.com/hbs_og.jpg",
-      },
-    }),
-    prisma.colleges.create({
-      data: {
-        college_name: "National Institute of Design",
-        location: "Delhi, India",
-        established: new Date("1990-05-10"),
-        email: "admissions@nid.edu",
-        contact: "7654321098",
-        logo_url: "https://example.com/nid_logo.png",
-        bg_url: "https://example.com/nid_bg.jpg",
-        media_url: JSON.stringify({
-          images: ["url1", "url2"],
-          videos: ["video1"],
-        }),
-        rating: 8.5,
-        score: 850,
-        primary_stream: CollegesPrimaryStream.Design,
-        intake_start_date: new Date("2025-08-01"),
-        pr_pathway: false,
-        slug: "national-institute-design",
-        meta_desc: "Top design institute in India",
-        og_img: "https://example.com/nid_og.jpg",
-      },
-    }),
-    prisma.colleges.create({
-      data: {
-        college_name: "National Law School",
-        location: "Bangalore, Karnataka",
-        established: new Date("1988-08-25"),
-        email: "info@nls.edu",
-        contact: "6543210987",
-        logo_url: "https://example.com/nls_logo.png",
-        bg_url: "https://example.com/nls_bg.jpg",
-        media_url: JSON.stringify({
-          images: ["url1", "url2"],
-          videos: ["video1"],
-        }),
-        rating: 9.0,
-        score: 900,
-        primary_stream: CollegesPrimaryStream.Law,
-        intake_start_date: new Date("2025-06-15"),
-        pr_pathway: true,
-        slug: "national-law-school",
-        meta_desc: "Premier law institution in India",
-        og_img: "https://example.com/nls_og.jpg",
-      },
-    }),
-  ]);
+    // Create countries first
+    console.log("Creating countries...");
+    const countries = await createCountries();
+    console.log(`Created ${countries.length} countries`);
 
-  console.log("Colleges created");
+    // Create states
+    console.log("Creating states...");
+    const states = await createStates();
+    console.log(`Created ${states.length} states`);
 
-  // Create courses
-  const courseIds = await Promise.all([
-    prisma.courses.create({
-      data: {
-        course_name: "Computer Science Engineering",
-        duration_in_months: 48,
-        rating: 9.1,
-        score: 910,
-        meta_desc:
-          "Learn computer science fundamentals and advanced programming",
-        og_img: "https://example.com/cse_og.jpg",
-      },
-    }),
-    prisma.courses.create({
-      data: {
-        course_name: "MBA in Marketing",
-        duration_in_months: 24,
-        rating: 8.5,
-        score: 850,
-        meta_desc: "Advanced marketing strategies and business management",
-        og_img: "https://example.com/mba_og.jpg",
-      },
-    }),
-    prisma.courses.create({
-      data: {
-        course_name: "Graphic Design",
-        duration_in_months: 36,
-        rating: 8.7,
-        score: 870,
-        meta_desc: "Learn design principles and tools",
-        og_img: "https://example.com/design_og.jpg",
-      },
-    }),
-    prisma.courses.create({
-      data: {
-        course_name: "LLB - Criminal Law",
-        duration_in_months: 36,
-        rating: 8.9,
-        score: 890,
-        meta_desc: "Study criminal law and legal procedures",
-        og_img: "https://example.com/llb_og.jpg",
-      },
-    }),
-  ]);
+    // Create cities
+    console.log("Creating cities...");
+    const cities = await createCities();
+    console.log(`Created ${cities.length} cities`);
 
-  console.log("Courses created");
+    // Create streams
+    console.log("Creating streams...");
+    const streams = await createStreams();
+    console.log(`Created ${streams.length} streams`);
 
-  // Create college courses
-  await Promise.all([
-    prisma.collegesCourses.create({
-      data: {
-        name: "B.Tech Computer Science",
-        duration_in_months: 48,
-        tution_fees: 120000,
-        hostel_fees: 60000,
-        one_time_fees: 25000,
-        other_fees: JSON.stringify({
-          library: 5000,
-          laboratory: 10000,
-          sports: 3000,
-        }),
-        meta_desc: "Bachelor of Technology in Computer Science",
-        og_img: "https://example.com/btech_cs_og.jpg",
-        college_id: collegeIds[0].id,
-        course_id: courseIds[0].id,
-      },
-    }),
-    prisma.collegesCourses.create({
-      data: {
-        name: "MBA Marketing",
-        duration_in_months: 24,
-        tution_fees: 200000,
-        hostel_fees: 80000,
-        one_time_fees: 35000,
-        other_fees: JSON.stringify({
-          library: 6000,
-          case_studies: 15000,
-          extracurriculars: 5000,
-        }),
-        meta_desc: "Master of Business Administration in Marketing",
-        og_img: "https://example.com/mba_marketing_og.jpg",
-        college_id: collegeIds[1].id,
-        course_id: courseIds[1].id,
-      },
-    }),
-    prisma.collegesCourses.create({
-      data: {
-        name: "Diploma in Graphic Design",
-        duration_in_months: 36,
-        tution_fees: 95000,
-        hostel_fees: 55000,
-        one_time_fees: 20000,
-        other_fees: JSON.stringify({
-          materials: 12000,
-          software_licenses: 8000,
-          exhibitions: 5000,
-        }),
-        meta_desc: "Professional Diploma in Graphic Design",
-        og_img: "https://example.com/diploma_gd_og.jpg",
-        college_id: collegeIds[2].id,
-        course_id: courseIds[2].id,
-      },
-    }),
-    prisma.collegesCourses.create({
-      data: {
-        name: "Bachelor of Law",
-        duration_in_months: 36,
-        tution_fees: 150000,
-        hostel_fees: 70000,
-        one_time_fees: 30000,
-        other_fees: JSON.stringify({
-          library: 7000,
-          moot_courts: 10000,
-          field_visits: 5000,
-        }),
-        meta_desc: "Bachelor of Law with specialization in Criminal Law",
-        og_img: "https://example.com/llb_og.jpg",
-        college_id: collegeIds[3].id,
-        course_id: courseIds[3].id,
-      },
-    }),
-  ]);
+    // Create colleges
+    console.log("Creating colleges...");
+    const colleges = await createColleges(
+      streams[0].id,
+      cities[0].id,
+      states[0].id,
+      countries[0].id
+    );
+    console.log(`Created ${colleges.length} colleges`);
 
-  console.log("College courses created");
+    // Create courses
+    console.log("Creating courses...");
+    const courses = await createCourses(streams);
+    console.log(`Created ${courses.length} courses`);
 
-  // Create collegewiseContent
-  await Promise.all([
-    prisma.collegewiseContent.create({
-      data: {
-        title: "About MIT Institute of Technology",
-        content:
-          "MIT Institute of Technology is a premier engineering institute established in 1983. The institute offers various undergraduate and postgraduate programs in engineering and technology.",
-        silos: CollegewiseContentSilos.info,
-        meta_desc: "Information about MIT Institute of Technology",
-        og_img: "https://example.com/mit_info_og.jpg",
-        college_id: collegeIds[0].id,
-      },
-    }),
-    prisma.collegewiseContent.create({
-      data: {
-        title: "Courses at Harvard Business School",
-        content:
-          "Harvard Business School offers a wide range of management courses including MBA, Executive MBA, and specialized management programs.",
-        silos: CollegewiseContentSilos.course,
-        meta_desc: "Courses offered at Harvard Business School",
-        og_img: "https://example.com/hbs_courses_og.jpg",
-        college_id: collegeIds[1].id,
-      },
-    }),
-    prisma.collegewiseContent.create({
-      data: {
-        title: "Scholarships at National Institute of Design",
-        content:
-          "NID offers various merit-based scholarships to deserving students. Scholarships cover tuition fees and provide monthly stipends.",
-        silos: CollegewiseContentSilos.scholarship,
-        meta_desc: "Scholarship opportunities at National Institute of Design",
-        og_img: "https://example.com/nid_scholarship_og.jpg",
-        college_id: collegeIds[2].id,
-      },
-    }),
-    prisma.collegewiseContent.create({
-      data: {
-        title: "Placement Records at National Law School",
-        content:
-          "National Law School has an excellent placement record with top law firms and corporations recruiting students with attractive packages.",
-        silos: CollegewiseContentSilos.placement,
-        meta_desc: "Placement statistics of National Law School",
-        og_img: "https://example.com/nls_placement_og.jpg",
-        college_id: collegeIds[3].id,
-      },
-    }),
-  ]);
+    // Create college courses
+    console.log("Creating college courses...");
+    await createCollegesCourses(colleges, courses, streams);
 
-  console.log("College content created");
+    // Create articles
+    console.log("Creating articles...");
+    await createArticles();
 
-  // Create articles
-  await Promise.all([
-    prisma.articles.create({
-      data: {
-        title: "Top Engineering Colleges in India 2025",
-        content:
-          "A comprehensive guide to the top engineering colleges in India for 2025 admissions. Includes rankings, cutoff marks, and admission procedures.",
-        silos: ArticlesSilos.news,
-        meta_desc: "Guide to top engineering colleges in India",
-        og_img: "https://example.com/engg_colleges_og.jpg",
-      },
-    }),
-    prisma.articles.create({
-      data: {
-        title: "How to Prepare for CAT 2025",
-        content:
-          "Expert tips and strategies to crack the Common Admission Test (CAT) for MBA admissions in 2025. Includes study plan and important topics.",
-        silos: ArticlesSilos.exam,
-        meta_desc: "CAT 2025 preparation guide",
-        og_img: "https://example.com/cat_prep_og.jpg",
-      },
-    }),
-    prisma.articles.create({
-      data: {
-        title: "Career Prospects After MBA in Marketing",
-        content:
-          "Explore the various career opportunities available after completing an MBA in Marketing. Learn about job roles, salary expectations, and growth prospects.",
-        silos: ArticlesSilos.course,
-        meta_desc: "Career options after MBA in Marketing",
-        og_img: "https://example.com/mba_career_og.jpg",
-      },
-    }),
-    prisma.articles.create({
-      data: {
-        title: "Choosing Between NEET and JEE: A Student's Dilemma",
-        content:
-          "A detailed blog discussing the factors to consider when choosing between medical (NEET) and engineering (JEE) entrance exams. Includes expert opinions and student experiences.",
-        silos: ArticlesSilos.blog,
-        meta_desc: "Guide to choosing between NEET and JEE",
-        og_img: "https://example.com/neet_jee_og.jpg",
-      },
-    }),
-  ]);
+    console.log("✅ Database seeded successfully!");
+  } catch (error) {
+    console.error("❌ Error during seeding:", error);
+    throw error;
+  }
+}
 
-  console.log("Articles created");
+async function createCountries() {
+  console.log("Creating countries...");
 
-  // Create lead form entries
-  await Promise.all([
-    prisma.leadForm.create({
-      data: {
-        name: "Rahul Sharma",
-        email: "rahul.sharma@example.com",
-        phn_no: "9876543210",
+  const countryData = [
+    { name: "India", slug: "india" },
+    { name: "United States", slug: "united-states" },
+    { name: "Canada", slug: "canada" },
+    { name: "United Kingdom", slug: "united-kingdom" },
+    { name: "Australia", slug: "australia" },
+  ];
+
+  const countries = [];
+
+  for (const data of countryData) {
+    const existingCountry = await prisma.country.findUnique({
+      where: { slug: data.slug },
+    });
+
+    if (!existingCountry) {
+      const country = await prisma.country.create({
+        data,
+      });
+      countries.push(country);
+      console.log(`Created country: ${country.name}`);
+    } else {
+      countries.push(existingCountry);
+      console.log(`Country ${existingCountry.name} already exists`);
+    }
+  }
+
+  return countries;
+}
+
+async function createStates() {
+  console.log("Creating states...");
+
+  const stateData = [
+    { name: "Maharashtra", slug: "maharashtra" },
+    { name: "Gujarat", slug: "gujarat" },
+    { name: "Karnataka", slug: "karnataka" },
+    { name: "Delhi", slug: "delhi" },
+    { name: "Tamil Nadu", slug: "tamil-nadu" },
+  ];
+
+  const states = [];
+
+  for (const data of stateData) {
+    const existingState = await prisma.state.findUnique({
+      where: { slug: data.slug },
+    });
+
+    if (!existingState) {
+      const state = await prisma.state.create({
+        data,
+      });
+      states.push(state);
+      console.log(`Created state: ${state.name}`);
+    } else {
+      states.push(existingState);
+      console.log(`State ${existingState.name} already exists`);
+    }
+  }
+
+  return states;
+}
+
+async function createCities() {
+  console.log("Creating cities...");
+
+  const cityData = [
+    { name: "Mumbai", slug: "mumbai" },
+    { name: "Ahmedabad", slug: "ahmedabad" },
+    { name: "Bangalore", slug: "bangalore" },
+    { name: "Delhi", slug: "delhi" },
+    { name: "Chennai", slug: "chennai" },
+  ];
+
+  const cities = [];
+
+  for (const data of cityData) {
+    const existingCity = await prisma.city.findUnique({
+      where: { slug: data.slug },
+    });
+
+    if (!existingCity) {
+      const city = await prisma.city.create({
+        data,
+      });
+      cities.push(city);
+      console.log(`Created city: ${city.name}`);
+    } else {
+      cities.push(existingCity);
+      console.log(`City ${existingCity.name} already exists`);
+    }
+  }
+
+  return cities;
+}
+
+async function createStreams() {
+  console.log("Creating streams...");
+
+  const streamData = [
+    { name: "Engineering", slug: "engineering" },
+    { name: "Management", slug: "management" },
+    { name: "Design", slug: "design" },
+    { name: "Law", slug: "law" },
+    { name: "Medical", slug: "medical" },
+  ];
+
+  const streams = [];
+
+  for (const data of streamData) {
+    const existingStream = await prisma.stream.findUnique({
+      where: { slug: data.slug },
+    });
+
+    if (!existingStream) {
+      const stream = await prisma.stream.create({
+        data,
+      });
+      streams.push(stream);
+      console.log(`Created stream: ${stream.name}`);
+    } else {
+      streams.push(existingStream);
+      console.log(`Stream ${existingStream.name} already exists`);
+    }
+  }
+
+  return streams;
+}
+
+async function createColleges(
+  defaultStreamId: number,
+  defaultCityId: number,
+  defaultStateId: number,
+  defaultCountryId: number
+) {
+  console.log("Creating colleges...");
+
+  const collegeData = [
+    {
+      college_name: "Indian Institute of Technology, Mumbai",
+      location: "Mumbai, Maharashtra",
+      established: new Date("1958-01-01"),
+      email: "contact@iitb.ac.in",
+      contact: "+91-22-25722545",
+      logo_url: "https://example.com/iit-mumbai-logo.png",
+      bg_url: "https://example.com/iit-mumbai-bg.jpg",
+      media_url: { images: ["img1.jpg", "img2.jpg"], videos: ["vid1.mp4"] },
+      rating: 9.5,
+      score: 950,
+      intake_start_date: new Date("2025-06-01"),
+      pr_pathway: false,
+      slug: "iit-mumbai-" + randomUUID().substring(0, 8),
+      total_students: 10000,
+      acceptance_rate: 0.05,
+      international_student_rate: 0.08,
+      streamId: defaultStreamId,
+      cityId: defaultCityId,
+      stateId: defaultStateId,
+      countryId: defaultCountryId,
+      meta_desc:
+        "IIT Mumbai is one of the premier engineering institutions in India",
+      og_img: "https://example.com/iit-mumbai-og.jpg",
+    },
+    {
+      college_name: "Indian Institute of Management, Ahmedabad",
+      location: "Ahmedabad, Gujarat",
+      established: new Date("1961-01-01"),
+      email: "contact@iima.ac.in",
+      contact: "+91-79-66324000",
+      logo_url: "https://example.com/iim-ahmedabad-logo.png",
+      bg_url: "https://example.com/iim-ahmedabad-bg.jpg",
+      media_url: { images: ["img1.jpg", "img2.jpg"], videos: ["vid1.mp4"] },
+      rating: 9.8,
+      score: 980,
+      intake_start_date: new Date("2025-07-01"),
+      pr_pathway: false,
+      slug: "iim-ahmedabad-" + randomUUID().substring(0, 8),
+      total_students: 8000,
+      acceptance_rate: 0.03,
+      international_student_rate: 0.12,
+      streamId: defaultStreamId,
+      cityId: defaultCityId,
+      stateId: defaultStateId,
+      countryId: defaultCountryId,
+      meta_desc:
+        "IIM Ahmedabad is one of the premier management institutions in India",
+      og_img: "https://example.com/iim-ahmedabad-og.jpg",
+    },
+    {
+      college_name: "National Institute of Design, Ahmedabad",
+      location: "Ahmedabad, Gujarat",
+      established: new Date("1961-01-01"),
+      email: "contact@nid.edu",
+      contact: "+91-79-26629500",
+      logo_url: "https://example.com/nid-ahmedabad-logo.png",
+      bg_url: "https://example.com/nid-ahmedabad-bg.jpg",
+      media_url: { images: ["img1.jpg", "img2.jpg"], videos: ["vid1.mp4"] },
+      rating: 9.2,
+      score: 920,
+      intake_start_date: new Date("2025-05-01"),
+      pr_pathway: false,
+      slug: "nid-ahmedabad-" + randomUUID().substring(0, 8),
+      total_students: 3000,
+      acceptance_rate: 0.08,
+      international_student_rate: 0.05,
+      streamId: defaultStreamId,
+      cityId: defaultCityId,
+      stateId: defaultStateId,
+      countryId: defaultCountryId,
+      meta_desc:
+        "NID Ahmedabad is one of the premier design institutions in India",
+      og_img: "https://example.com/nid-ahmedabad-og.jpg",
+    },
+    {
+      college_name: "National Law School of India University",
+      location: "Bangalore, Karnataka",
+      established: new Date("1986-01-01"),
+      email: "contact@nls.ac.in",
+      contact: "+91-80-23160537",
+      logo_url: "https://example.com/nlsiu-logo.png",
+      bg_url: "https://example.com/nlsiu-bg.jpg",
+      media_url: { images: ["img1.jpg", "img2.jpg"], videos: ["vid1.mp4"] },
+      rating: 9.4,
+      score: 940,
+      intake_start_date: new Date("2025-05-15"),
+      pr_pathway: false,
+      slug: "nlsiu-bangalore-" + randomUUID().substring(0, 8),
+      total_students: 2500,
+      acceptance_rate: 0.04,
+      international_student_rate: 0.06,
+      streamId: defaultStreamId,
+      cityId: defaultCityId,
+      stateId: defaultStateId,
+      countryId: defaultCountryId,
+      meta_desc: "NLSIU is one of the premier law institutions in India",
+      og_img: "https://example.com/nlsiu-og.jpg",
+    },
+  ];
+
+  const colleges = [];
+
+  for (const data of collegeData) {
+    const existingCollege = await prisma.colleges.findUnique({
+      where: { slug: data.slug },
+    });
+
+    if (!existingCollege) {
+      const college = await prisma.colleges.create({
+        data,
+      });
+      colleges.push(college);
+      console.log(`Created college: ${college.college_name}`);
+    } else {
+      colleges.push(existingCollege);
+      console.log(`College ${existingCollege.college_name} already exists`);
+    }
+  }
+
+  return colleges;
+}
+
+async function createCourses(streams: any[]) {
+  console.log("Creating courses...");
+
+  const courseData = [
+    {
+      course_name: "Bachelor of Technology",
+      duration_in_months: 48,
+      rating: 9.4,
+      score: 940,
+      streamId:
+        streams.find((s) => s.name === "Engineering")?.id || streams[0].id,
+      meta_desc: "B.Tech program for engineering students",
+      og_img: "https://example.com/btech-og.jpg",
+    },
+    {
+      course_name: "Master of Business Administration",
+      duration_in_months: 24,
+      rating: 9.7,
+      score: 970,
+      streamId:
+        streams.find((s) => s.name === "Management")?.id || streams[0].id,
+      meta_desc: "MBA program for management students",
+      og_img: "https://example.com/mba-og.jpg",
+    },
+    {
+      course_name: "Bachelor of Design",
+      duration_in_months: 48,
+      rating: 9.1,
+      score: 910,
+      streamId: streams.find((s) => s.name === "Design")?.id || streams[0].id,
+      meta_desc: "B.Des program for design students",
+      og_img: "https://example.com/bdes-og.jpg",
+    },
+    {
+      course_name: "Bachelor of Laws",
+      duration_in_months: 36,
+      rating: 9.3,
+      score: 930,
+      streamId: streams.find((s) => s.name === "Law")?.id || streams[0].id,
+      meta_desc: "LLB program for law students",
+      og_img: "https://example.com/llb-og.jpg",
+    },
+    {
+      course_name: "Bachelor of Medicine",
+      duration_in_months: 66,
+      rating: 9.6,
+      score: 960,
+      streamId: streams.find((s) => s.name === "Medical")?.id || streams[0].id,
+      meta_desc: "MBBS program for medical students",
+      og_img: "https://example.com/mbbs-og.jpg",
+    },
+  ];
+
+  const courses = [];
+
+  for (const data of courseData) {
+    const existingCourse = await prisma.courses.findFirst({
+      where: {
+        course_name: data.course_name,
+        streamId: data.streamId,
       },
-    }),
-    prisma.leadForm.create({
-      data: {
-        name: "Priya Patel",
-        email: "priya.patel@example.com",
-        phn_no: "8765432109",
+    });
+
+    if (!existingCourse) {
+      const course = await prisma.courses.create({
+        data,
+      });
+      courses.push(course);
+      console.log(`Created course: ${course.course_name}`);
+    } else {
+      courses.push(existingCourse);
+      console.log(`Course ${existingCourse.course_name} already exists`);
+    }
+  }
+
+  return courses;
+}
+
+async function createCollegesCourses(
+  colleges: any[],
+  courses: any[],
+  streams: any[]
+) {
+  console.log("Creating college courses...");
+
+  for (const college of colleges) {
+    // Match colleges with relevant courses
+    const relevantCourses = courses.slice(0, 2); // First 2 courses for each college
+
+    for (const course of relevantCourses) {
+      const existingCollegeCourse = await prisma.collegesCourses.findFirst({
+        where: {
+          college_id: college.id,
+          course_id: course.id,
+        },
+      });
+
+      if (!existingCollegeCourse) {
+        const collegeCourse = await prisma.collegesCourses.create({
+          data: {
+            name: `${college.college_name} - ${course.course_name}`,
+            duration_in_months: course.duration_in_months,
+            tution_fees: Math.floor(Math.random() * 500000) + 100000,
+            hostel_fees: Math.floor(Math.random() * 100000) + 50000,
+            one_time_fees: Math.floor(Math.random() * 50000) + 10000,
+            other_fees: {
+              library: Math.floor(Math.random() * 5000) + 1000,
+              sports: Math.floor(Math.random() * 5000) + 1000,
+              lab: Math.floor(Math.random() * 10000) + 5000,
+            },
+            college_id: college.id,
+            course_id: course.id,
+            streamId: course.streamId,
+            meta_desc: `${course.course_name} at ${college.college_name}`,
+            og_img: "https://example.com/college-course-og.jpg",
+          },
+        });
+        console.log(`Created college course: ${collegeCourse.name}`);
+      } else {
+        console.log(
+          `College course ${existingCollegeCourse.name} already exists`
+        );
+      }
+    }
+
+    // Add content to the college
+    await createCollegeContent(college.id);
+  }
+}
+
+async function createCollegeContent(collegeId: number) {
+  const contentTypes = [
+    { type: "info", title: "College Information" },
+    { type: "course", title: "Courses Offered" },
+    { type: "fees", title: "Fee Structure" },
+    { type: "scholarship", title: "Scholarships Available" },
+    { type: "placement", title: "Placement Statistics" },
+  ];
+
+  for (const { type, title } of contentTypes) {
+    const existingContent = await prisma.collegewiseContent.findFirst({
+      where: {
+        college_id: collegeId,
+        silos: type as any,
       },
-    }),
-  ]);
+    });
 
-  console.log("Lead form entries created");
+    if (!existingContent) {
+      await prisma.collegewiseContent.create({
+        data: {
+          title,
+          content: `This is sample content for the ${type} section of the college. It provides detailed information about ${type} related aspects of the institution.`,
+          silos: type as any,
+          meta_desc: `Information about college ${type}`,
+          og_img: `https://example.com/${type}-og.jpg`,
+          college_id: collegeId,
+        },
+      });
+      console.log(`Created ${type} content for college ID ${collegeId}`);
+    } else {
+      console.log(`${type} content for college ID ${collegeId} already exists`);
+    }
+  }
+}
 
-  // Create subscription entries
-  await Promise.all([
-    prisma.subsciption.create({
-      data: {
-        name: "Amit Kumar",
-        email: "amit.kumar@example.com",
-        phn_no: "7654321098",
-      },
-    }),
-    prisma.subsciption.create({
-      data: {
-        name: "Sneha Gupta",
-        email: "sneha.gupta@example.com",
-        phn_no: "6543210987",
-      },
-    }),
-  ]);
+async function createArticles() {
+  console.log("Creating articles...");
 
-  console.log("Subscription entries created");
+  const articleData = [
+    {
+      title: "Top Engineering Colleges in India 2025",
+      content:
+        "A comprehensive guide to the best engineering colleges in India for the year 2025. This article covers admission procedures, eligibility criteria, and placement statistics.",
+      silos: "blog" as const,
+      meta_desc: "Discover the top engineering colleges in India for 2025",
+      og_img: "https://example.com/engineering-colleges-og.jpg",
+    },
+    {
+      title: "JEE Main 2025: Important Dates and Exam Pattern",
+      content:
+        "All you need to know about JEE Main 2025 including important dates, exam pattern, syllabus, and preparation tips for aspiring engineers.",
+      silos: "exam" as const,
+      meta_desc: "Complete guide to JEE Main 2025 exam",
+      og_img: "https://example.com/jee-main-og.jpg",
+    },
+    {
+      title: "MBA vs MS: Which is Better for Your Career?",
+      content:
+        "A detailed comparison between MBA and MS programs to help you make an informed decision about your higher education and career path.",
+      silos: "course" as const,
+      meta_desc: "MBA vs MS comparison for career growth",
+      og_img: "https://example.com/mba-vs-ms-og.jpg",
+    },
+    {
+      title: "Education Ministry Announces New NEP Guidelines",
+      content:
+        "The latest updates from the Education Ministry regarding the implementation of the New Education Policy and its impact on higher education.",
+      silos: "news" as const,
+      meta_desc: "Latest NEP guidelines from Education Ministry",
+      og_img: "https://example.com/nep-news-og.jpg",
+    },
+  ];
 
-  console.log("Database seeding completed successfully");
+  for (const data of articleData) {
+    const existingArticle = await prisma.articles.findFirst({
+      where: { title: data.title },
+    });
+
+    if (!existingArticle) {
+      const article = await prisma.articles.create({
+        data,
+      });
+      console.log(`Created article: ${article.title}`);
+    } else {
+      console.log(`Article "${existingArticle.title}" already exists`);
+    }
+  }
 }
 
 main()
