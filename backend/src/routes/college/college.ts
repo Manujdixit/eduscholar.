@@ -2,6 +2,7 @@ import express from "express";
 import { getTopColleges } from "../../controllers/college/topColleges";
 import { collegeInfo } from "../../controllers/college/info";
 import { getCollegeCoursesInfo } from "../../controllers/college/courses";
+import { getCollegeFeesInfo } from "../../controllers/college/fees";
 
 const CollegeRouter = express.Router();
 
@@ -77,5 +78,30 @@ CollegeRouter.get("/info/:id", collegeInfo as any);
  *         description: Internal server error
  */
 CollegeRouter.get("/courses/:id", getCollegeCoursesInfo as any);
+
+/**
+ * @swagger
+ * /api/v1/college/courses/{id}:
+ *   get:
+ *     summary: Get fess for corses offered by a college
+ *     tags: [Colleges]
+ *     description: Retrieve all fees for courses offered by a specific college
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: College ID
+ *         schema:
+ *           type: integer
+ *           example: 1
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved college courses fees
+ *       404:
+ *         description: College not found
+ *       500:
+ *         description: Internal server error
+ */
+CollegeRouter.get("/fees/:id", getCollegeFeesInfo as any);
 
 export default CollegeRouter;
