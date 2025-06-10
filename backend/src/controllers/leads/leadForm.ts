@@ -5,38 +5,6 @@ const prisma = new PrismaClient();
 
 /**
  * @swagger
- * components:
- *   schemas:
- *     LeadForm:
- *       type: object
- *       required:
- *         - name
- *         - email
- *         - phn_no
- *       properties:
- *         id:
- *           type: integer
- *           description: Auto-generated ID
- *         name:
- *           type: string
- *           description: Lead's name
- *         email:
- *           type: string
- *           format: email
- *           description: Lead's email
- *         phn_no:
- *           type: string
- *           description: Lead's phone number
- *         createdAt:
- *           type: string
- *           format: date-time
- *         updatedAt:
- *           type: string
- *           format: date-time
- */
-
-/**
- * @swagger
  * /api/v1/leads:
  *   post:
  *     summary: Create a new lead form entry
