@@ -3,10 +3,11 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "build": "tsc -b",
-    "start": "node dist/src/index.js",
-    "dev": "nodemon src/index.ts",
-    "db:seed": "ts-node prisma/seed.ts"
+    "build": "npm i && npx prisma generate && tsc -b",
+    "start": "npx prisma migrate deploy && node dist/index.js",
+    "postinstall": "prisma generate",
+    "db:seed": "ts-node prisma/seed.ts",
+    "dev": "nodemon src/index.ts"
   },
   "keywords": [],
   "author": "Manujdixit",
