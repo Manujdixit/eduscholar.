@@ -44,6 +44,7 @@ export const globalSearch = async (req: Request, res: Response) => {
           OR: [
             { college_name: { contains: q, mode: "insensitive" } },
             { location: { contains: q, mode: "insensitive" } },
+            { search_names: { contains: q, mode: "insensitive" } },
           ],
         },
         select: {
