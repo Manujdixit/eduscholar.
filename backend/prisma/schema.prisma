@@ -25,13 +25,16 @@ model Colleges {
   bg_url                     String
   media_url                  Json
   rating                     Float // Must be between 1 and 10
-  score                      Int // Must be between 1 and 999
+  score                      Int      @default(1) // Must be between 1 and 999
   intake_start_date          DateTime
   pr_pathway                 Boolean
   slug                       String   @unique
   total_students             Int      @default(0)
   acceptance_rate            Float    @default(0)
   international_student_rate Float    @default(0)
+  brochure_url               String?
+  avg_fees_in_aud            Float?
+  search_names               String?
 
   streamId  Int @default(1)
   cityId    Int @default(1)
@@ -58,7 +61,7 @@ model Courses {
   course_name        String
   duration_in_months Int
   rating             Float // Must be between 1 and 10
-  score              Int // Must be between 1 and 999
+  score              Int    @default(1) // Must be between 1 and 999
   stream             Stream @relation(fields: [streamId], references: [id])
   streamId           Int
 
@@ -79,6 +82,7 @@ model CollegesCourses {
   hostel_fees        Float
   one_time_fees      Float
   other_fees         Json
+  score              Int    @default(1)
 
   college_id Int
   course_id  Int
@@ -100,6 +104,7 @@ model CollegewiseContent {
   title   String
   content String
   silos   CollegewiseContentSilos @default(info)
+  score   Int                     @default(1)
 
   meta_desc String
   og_img    String
@@ -131,6 +136,7 @@ model Articles {
   title   String
   content String
   silos   ArticlesSilos @default(news)
+  score   Int           @default(1)
 
   meta_desc String
   og_img    String
@@ -168,9 +174,10 @@ model Subscription {
 }
 
 model City {
-  id   Int    @id @default(autoincrement())
-  name String
-  slug String @unique
+  id    Int    @id @default(autoincrement())
+  name  String
+  slug  String @unique
+  score Int    @default(1)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -179,9 +186,10 @@ model City {
 }
 
 model State {
-  id   Int    @id @default(autoincrement())
-  name String
-  slug String @unique
+  id    Int    @id @default(autoincrement())
+  name  String
+  slug  String @unique
+  score Int    @default(1)
 
   Colleges Colleges[]
 
@@ -190,9 +198,10 @@ model State {
 }
 
 model Country {
-  id   Int    @id @default(autoincrement())
-  name String
-  slug String @unique
+  id    Int    @id @default(autoincrement())
+  name  String
+  slug  String @unique
+  score Int    @default(1)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -201,9 +210,10 @@ model Country {
 }
 
 model Stream {
-  id   Int    @id @default(autoincrement())
-  name String
-  slug String @unique
+  id    Int    @id @default(autoincrement())
+  name  String
+  slug  String @unique
+  score Int    @default(1)
 
   Colleges        Colleges[]
   Courses         Courses[]
