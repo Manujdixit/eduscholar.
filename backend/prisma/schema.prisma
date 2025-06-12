@@ -189,7 +189,7 @@ model City {
 
   state_id   Int?
   country_id Int?
-  content    String
+  content    String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
