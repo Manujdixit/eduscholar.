@@ -404,24 +404,6 @@ async function main() {
     }
     console.log(`Created ${articles.length} articles`);
 
-    // Seed sample data for other models
-    await prisma.leadForm.createMany({
-      data: [
-        {
-          name: "John Doe",
-          email: "john.doe@example.com",
-          phn_no: "+91-9876543210",
-        },
-        {
-          name: "Jane Smith",
-          email: "jane.smith@example.com",
-          phn_no: "+91-8765432109",
-        },
-      ],
-      skipDuplicates: true,
-    });
-    console.log("Created sample lead forms");
-
     await prisma.subscription.createMany({
       data: [
         {
@@ -438,29 +420,6 @@ async function main() {
       skipDuplicates: true,
     });
     console.log("Created sample subscriptions");
-
-    await prisma.contactUs.createMany({
-      data: [
-        {
-          name: "Charlie Brown",
-          email: "charlie.brown@example.com",
-          phn_no: "+91-5432109876",
-          user_msg: "I need information about engineering colleges",
-          text1: "Engineering",
-          text2: "Undergraduate",
-        },
-        {
-          name: "Diana Prince",
-          email: "diana.prince@example.com",
-          phn_no: "+91-4321098765",
-          user_msg: "Looking for medical college admissions",
-          text1: "Medicine",
-          text2: "MBBS",
-        },
-      ],
-      skipDuplicates: true,
-    });
-    console.log("Created sample contact us entries");
 
     console.log("Database seeding completed successfully!");
   } catch (error) {

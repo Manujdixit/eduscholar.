@@ -187,10 +187,16 @@ model City {
   slug  String @unique
   score Int    @default(1)
 
+  state_id   Int?
+  country_id Int?
+  content    String
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   Colleges Colleges[]
+  State    State?     @relation(fields: [state_id], references: [id])
+  Country  Country?   @relation(fields: [country_id], references: [id])
 }
 
 model State {
@@ -203,6 +209,7 @@ model State {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  City      City[]
 }
 
 model Country {
@@ -215,6 +222,7 @@ model Country {
   updatedAt DateTime @updatedAt
 
   Colleges Colleges[]
+  City     City[]
 }
 
 model Stream {
