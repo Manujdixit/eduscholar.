@@ -47,23 +47,23 @@ const prisma = new PrismaClient();
  */
 export const createContactUs = async (req: Request, res: Response) => {
   try {
-    const { name, phn_no, email, user_msg, text1, text2 } = req.body;
+    const { fname, lname, phn_no, email, user_msg, text1, text2 } = req.body;
 
-    if (!name || !phn_no || !email || !user_msg || !text1 || !text2) {
+    if (!fname || !email || !phn_no || !user_msg) {
       return res.status(400).json({
-        error:
-          "Missing required fields: name, phn_no, email, user_msg, text1, and text2 are required",
+        error: "Missing required fields",
       });
     }
 
     const contactUs = await prisma.contactUs.create({
       data: {
-        name,
-        phn_no,
+        first_name: fname,
+        last_name: lname,
         email,
         user_msg,
         text1,
         text2,
+        phn_no,
       },
     });
 

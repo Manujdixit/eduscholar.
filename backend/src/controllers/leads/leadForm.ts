@@ -16,16 +16,38 @@ const prisma = new PrismaClient();
  *           schema:
  *             type: object
  *             required:
- *               - name
+ *               - first_name
+ *               - last_name
  *               - email
  *               - phn_no
+ *               - course_preference
+ *               - gender
+ *               - dob
+ *               - preffered_intake
+ *               - english_test
+ *               - visa
  *             properties:
- *               name:
+ *               first_name:
+ *                 type: string
+ *               last_name:
  *                 type: string
  *               email:
  *                 type: string
  *                 format: email
  *               phn_no:
+ *                 type: string
+ *               course_preference:
+ *                 type: string
+ *               gender:
+ *                 type: string
+ *               dob:
+ *                 type: string
+ *                 format: date
+ *               preffered_intake:
+ *                 type: string
+ *               english_test:
+ *                 type: string
+ *               visa:
  *                 type: string
  *     responses:
  *       201:
@@ -41,19 +63,51 @@ const prisma = new PrismaClient();
  */
 export const createLeadForm = async (req: Request, res: Response) => {
   try {
-    const { name, email, phn_no } = req.body;
+    const {
+      first_name,
+      last_name,
+      email,
+      phn_no,
+      course_preference,
+      gender,
+      dob,
+      preffered_intake,
+      english_test,
+      visa,
+      preffered_state,
+    } = req.body;
 
-    if (!name || !email || !phn_no) {
+    if (
+      !first_name ||
+      !last_name ||
+      !email ||
+      !phn_no ||
+      !course_preference ||
+      !gender ||
+      !dob ||
+      !preffered_intake ||
+      !english_test ||
+      !visa ||
+      !preffered_state
+    ) {
       return res.status(400).json({
-        error: "Missing required fields: name, email, and phn_no are required",
+        error: "Missing required fields",
       });
     }
 
     const leadForm = await prisma.leadForm.create({
       data: {
-        name,
+        first_name,
+        last_name,
         email,
+        course_preference,
+        gender,
+        dob,
+        preffered_intake,
+        english_test,
+        visa,
         phn_no,
+        preffered_state,
       },
     });
 
@@ -213,12 +267,29 @@ export const getLeadFormById = async (req: Request, res: Response) => {
  *           schema:
  *             type: object
  *             properties:
- *               name:
+ *               first_name:
+ *                 type: string
+ *               last_name:
  *                 type: string
  *               email:
  *                 type: string
  *                 format: email
  *               phn_no:
+ *                 type: string
+ *               course_preference:
+ *                 type: string
+ *               gender:
+ *                 type: string
+ *               dob:
+ *                 type: string
+ *                 format: date
+ *               preffered_intake:
+ *                 type: string
+ *               english_test:
+ *                 type: string
+ *               visa:
+ *                 type: string
+ *               preffered_state:
  *                 type: string
  *     responses:
  *       200:
@@ -227,6 +298,8 @@ export const getLeadFormById = async (req: Request, res: Response) => {
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/LeadForm'
+ *       400:
+ *         description: Bad request
  *       404:
  *         description: Lead form not found
  *       500:
@@ -241,7 +314,19 @@ export const updateLeadForm = async (req: Request, res: Response) => {
       return res.status(400).json({ error: "Invalid ID format" });
     }
 
-    const { name, email, phn_no } = req.body;
+    const {
+      first_name,
+      last_name,
+      email,
+      phn_no,
+      course_preference,
+      gender,
+      dob,
+      preffered_intake,
+      english_test,
+      visa,
+      preffered_state,
+    } = req.body;
 
     const existingLeadForm = await prisma.leadForm.findUnique({
       where: { id: leadFormId },
@@ -254,9 +339,17 @@ export const updateLeadForm = async (req: Request, res: Response) => {
     const updatedLeadForm = await prisma.leadForm.update({
       where: { id: leadFormId },
       data: {
-        ...(name && { name }),
+        ...(first_name && { first_name }),
+        ...(last_name && { last_name }),
         ...(email && { email }),
         ...(phn_no && { phn_no }),
+        ...(course_preference && { course_preference }),
+        ...(gender && { gender }),
+        ...(dob && { dob }),
+        ...(preffered_intake && { preffered_intake }),
+        ...(english_test && { english_test }),
+        ...(visa && { visa }),
+        ...(preffered_state && { preffered_state }),
       },
     });
 

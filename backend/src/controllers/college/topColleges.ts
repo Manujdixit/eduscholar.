@@ -54,6 +54,7 @@ export const getTopColleges = async (req: Request, res: Response) => {
         intake_start_date: true,
         pr_pathway: true,
         slug: true,
+        avg_fees_in_aud: true,
         CollegesCourses: {
           select: { id: true },
         },
@@ -68,6 +69,7 @@ export const getTopColleges = async (req: Request, res: Response) => {
       intake_start_date: college.intake_start_date,
       pr_pathway: college.pr_pathway,
       slug: college.slug,
+      avg_fees_in_aud: college.avg_fees_in_aud,
       count_collegewise_course: college.CollegesCourses.length,
     }));
 
