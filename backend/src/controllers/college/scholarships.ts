@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 
 /**
  * @swagger
- * /api/v1/college/scholarship/{id}:
+ * /api/v1/college/scholarships/{id}:
  *   get:
  *     summary: Get college scholarship information
  *     tags: [Colleges]

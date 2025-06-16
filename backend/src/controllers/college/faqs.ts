@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 
 /**
  * @swagger
- * /api/v1/college/faq/{id}:
+ * /api/v1/college/faqs/{id}:
  *   get:
  *     summary: Get college FAQs
  *     tags: [Colleges]
