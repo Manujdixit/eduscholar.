@@ -5,7 +5,7 @@
 
 */
 -- AlterTable
-ALTER TABLE "City" ADD COLUMN     "content" TEXT NOT NULL,
+ALTER TABLE "City" ADD COLUMN     "content" TEXT,
 ADD COLUMN     "country_id" INTEGER,
 ADD COLUMN     "state_id" INTEGER;
 
