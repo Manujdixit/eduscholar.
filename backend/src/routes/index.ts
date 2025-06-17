@@ -4,6 +4,7 @@ import SearchRouter from "./search/search";
 import LeadRouter from "./leads/leads";
 import SubscriptionRouter from "./subscriptions/subscriptions";
 import ContactUsRouter from "./contactUs/contactUs";
+import ArticleRouter from "./articles/articles";
 
 const router = express.Router();
 
@@ -20,6 +21,8 @@ const router = express.Router();
  *     description: Subscription management endpoints
  *   - name: ContactUs
  *     description: Contact us form management endpoints
+ *   - name: Articles
+ *     description: Articles management endpoints
  */
 
 router.use("/college", CollegeRouter);
@@ -27,5 +30,6 @@ router.use("/search", SearchRouter);
 router.use("/leads", LeadRouter);
 router.use("/subscriptions", SubscriptionRouter);
 router.use("/contact-us", ContactUsRouter);
+router.use("/articles", ArticleRouter);
 
 export default router;
