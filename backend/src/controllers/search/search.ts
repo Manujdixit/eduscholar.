@@ -56,7 +56,6 @@ export const globalSearch = async (req: Request, res: Response) => {
           score: true,
           slug: true,
         },
-        take: 3,
       }),
       prisma.courses.findMany({
         where: {
@@ -69,7 +68,6 @@ export const globalSearch = async (req: Request, res: Response) => {
           rating: true,
           score: true,
         },
-        take: 3,
       }),
       prisma.articles.findMany({
         where: {
@@ -85,7 +83,6 @@ export const globalSearch = async (req: Request, res: Response) => {
           meta_desc: true,
           createdAt: true,
         },
-        take: 3,
       }),
     ]);
 
